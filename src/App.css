@@ -1,0 +1,93 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  font-family: 'Segoe UI', sans-serif;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 40px 16px 60px;
+}
+.root-card { max-width: 520px; width: 100%; }
+.card {
+  background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
+  padding: 36px 32px; width: 100%; max-width: 520px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+}
+.title { color: #fff; font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.title span { color: #a78bfa; }
+.subtitle { color: rgba(255,255,255,0.4); font-size: 14px; margin-bottom: 28px; }
+.input-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.input-box {
+  flex: 1; padding: 13px 16px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; color: #fff; font-size: 15px; outline: none;
+}
+.input-box:focus { border-color: rgba(167,139,250,0.6); }
+.input-box::placeholder { color: rgba(255,255,255,0.3); }
+.add-btn {
+  padding: 13px 22px; background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  color: #fff; border: none; border-radius: 12px; font-size: 22px;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+}
+.priority-select {
+  width: 100%; padding: 10px 14px; margin-bottom: 20px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; color: rgba(255,255,255,0.7); font-size: 13px; outline: none; cursor: pointer;
+}
+.priority-select option { background: #302b63; }
+.stats { display: flex; gap: 10px; margin-bottom: 18px; }
+.stat-box {
+  flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 12px; text-align: center;
+}
+.stat-num { font-size: 22px; font-weight: 800; color: #a78bfa; }
+.stat-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-top: 2px; }
+.progress-wrap { background: rgba(255,255,255,0.08); border-radius: 20px; height: 6px; overflow: hidden; margin-bottom: 20px; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); border-radius: 20px; transition: width 0.4s ease; }
+.filters { display: flex; gap: 8px; margin-bottom: 20px; }
+.filter-btn {
+  padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.12);
+  background: transparent; color: rgba(255,255,255,0.5); font-size: 13px; cursor: pointer;
+}
+.filter-btn.active {
+  background: linear-gradient(135deg, #7c3aed, #a78bfa); color: #fff; border-color: transparent;
+}
+.todo-list { display: flex; flex-direction: column; gap: 10px; }
+.todo-item {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; transition: all 0.2s;
+}
+.todo-item:hover { background: rgba(255,255,255,0.08); }
+.todo-item.done-item { opacity: 0.5; }
+.check-btn {
+  width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(167,139,250,0.5);
+  background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0; color: transparent;
+}
+.check-btn.checked { background: linear-gradient(135deg,#7c3aed,#a78bfa); border-color: transparent; color: #fff; }
+.todo-text { flex: 1; color: rgba(255,255,255,0.85); font-size: 15px; }
+.todo-text.done-text { text-decoration: line-through; color: rgba(255,255,255,0.3); }
+.badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; }
+.high   { background: rgba(239,68,68,0.2);  color: #f87171; }
+.medium { background: rgba(245,158,11,0.2); color: #fbbf24; }
+.low    { background: rgba(34,197,94,0.2);  color: #4ade80; }
+.del-btn {
+  width: 28px; height: 28px; background: rgba(239,68,68,0.15); border: none;
+  border-radius: 8px; color: #f87171; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;
+}
+.todo-item:hover .del-btn { opacity: 1; }
+.empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.25); }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+.clear-btn {
+  width: 100%; margin-top: 16px; padding: 11px;
+  background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 12px; color: #f87171; font-size: 14px; cursor: pointer;
+}
+
+/* Small responsive tweaks */
+@media (max-width: 480px) {
+  .card { padding: 20px; border-radius: 16px; }
+  .title { font-size: 20px; }
+}
