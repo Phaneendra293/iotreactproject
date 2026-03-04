@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "text": "Build a React project 🚀",
+    "done": false,
+    "priority": "high"
+  },
+  {
+    "id": 2,
+    "text": "Push code to GitHub",
+    "done": false,
+    "priority": "medium"
+  },
+  {
+    "id": 3,
+    "text": "Learn JavaScript basics",
+    "done": true,
+    "priority": "low"
+  }
+]

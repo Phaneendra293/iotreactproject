@@ -1,25 +1,52 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [todos, setTodos] = useState([
-    { id: 1, text: 'Build a React project 🚀', done: false, priority: 'high' },
-    { id: 2, text: 'Push code to GitHub',        done: false, priority: 'medium' },
-    { id: 3, text: 'Learn JavaScript basics',    done: true,  priority: 'low' },
-  ])
+  const [todos, setTodos] = useState([])
   const [input, setInput]       = useState('')
   const [priority, setPriority] = useState('medium')
   const [filter, setFilter]     = useState('all')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState(null)
 
-  const add = () => {
+  const add = async () => {
     const text = input.trim()
     if (!text) return
-    setTodos(prev => [{ id: Date.now(), text, done: false, priority }, ...prev])
-    setInput('')
+    setError(null)
+    try {
+      const res = await fetch('/api/addTask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, priority })
+      })
+      if (!res.ok) throw new Error(`Add failed: ${res.status}`)
+      const created = await res.json()
+      setTodos(prev => [created, ...prev])
+      setInput('')
+    } catch (err) {
+      console.error(err)
+      setError('Failed to add task')
+    }
   }
 
-  const toggle    = id => setTodos(prev => prev.map(t => t.id === id ? {...t, done: !t.done} : t))
-  const remove    = id => setTodos(prev => prev.filter(t => t.id !== id))
+  const toggle = id => setTodos(prev => prev.map(t => t.id === id ? {...t, done: !t.done} : t))
+
+  const remove = async id => {
+    setError(null)
+    try {
+      const res = await fetch(`/api/deleteTask/${id}`, { method: 'DELETE' })
+      if (res.status !== 204 && res.status !== 200) {
+        // try to parse any returned body
+        let body = null
+        try { body = await res.json() } catch (e) {}
+        throw new Error(`Delete failed: ${res.status} ${body && body.error ? body.error : ''}`)
+      }
+      setTodos(prev => prev.filter(t => t.id !== id))
+    } catch (err) {
+      console.error(err)
+      setError('Failed to delete task')
+    }
+  }
   const clearDone = ()  => setTodos(prev => prev.filter(t => !t.done))
 
   const filtered = useMemo(() => {
@@ -30,6 +57,26 @@ function App() {
 
   const doneCount = todos.filter(t => t.done).length
   const progress  = todos.length ? Math.round((doneCount / todos.length) * 100) : 0
+
+  useEffect(() => {
+    let mounted = true
+    ;(async function load() {
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await fetch('/api/getTasks')
+        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`)
+        const data = await res.json()
+        if (mounted) setTodos(data)
+      } catch (err) {
+        console.error(err)
+        if (mounted) setError('Failed to load tasks')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    })()
+    return () => { mounted = false }
+  }, [])
 
   return (
     <div className="card root-card">
@@ -71,12 +118,14 @@ function App() {
       </div>
 
       <div className="todo-list">
-        {filtered.length === 0 ? (
-          <div className="empty">
-            <div className="empty-icon">✅</div>
-            {filter==='completed' ? "No completed tasks yet." : filter==='active' ? "All tasks done! 🎉" : "No tasks yet. Add one above!"}
-          </div>
-        ) : filtered.map(todo => (
+          {loading ? (
+            <div className="empty">Loading tasks…</div>
+          ) : filtered.length === 0 ? (
+              <div className="empty">
+                <div className="empty-icon">✅</div>
+                {filter==='completed' ? "No completed tasks yet." : filter==='active' ? "All tasks done! 🎉" : "No tasks yet. Add one above!"}
+              </div>
+            ) : filtered.map(todo => (
           <div key={todo.id} className={`todo-item ${todo.done?"done-item":""}`}>
             <button className={`check-btn ${todo.done?"checked":""}`} onClick={() => toggle(todo.id)}>
               {todo.done ? "✓" : ""}
